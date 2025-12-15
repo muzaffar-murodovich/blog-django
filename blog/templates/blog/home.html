@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+
+{% block title %}Asosiy Sahifa{% endblock %}
+
+{% block sidebar %}
+    <h4>Eng koʻp koʻrilgan postlar</h4>
+    <ul>
+        {% for post in most_viewed %}
+            <li>
+                <a href="{% url 'post_detail' post.slug %}">{{ post.title }}</a> 
+                <small>({{ post.hit_count.hits }} marta ko'rilgan)</small>
+            </li>
+        {% endfor %}
+    </ul>
+
+    <h4>Haftaning ommabop postlari</h4>
+    <ul>
+        {% for post in weekly_popular %}
+            <li><a href="{% url 'post_detail' post.slug %}">{{ post.title }}</a></li>
+        {% endfor %}
+    </ul>
+
+    <h4>Oyning ommabop postlari</h4>
+    <ul>
+        {% for post in monthly_popular %}
+            <li><a href="{% url 'post_detail' post.slug %}">{{ post.title }}</a></li>
+        {% endfor %}
+    </ul>
+
+    {% if featured_posts %}
+    <h4>Tavsiya qilingan postlar</h4>
+    <ul>
+        {% for post in featured_posts %}
+            <li><a href="{% url 'post_detail' post.slug %}">{{ post.title }}</a></li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+{% endblock %}
+
+
+{% block content %}
+    <h2>Eng yangi postlar</h2>
+
+    {% for post in posts %}
+        <div class="post">
+            {% if post.image %}
+                <img src="{{ post.image.url }}" alt="{{ post.title }}" style="max-width: 100%; height: auto;">
+            {% endif %}
+            <h2><a href="{% url 'post_detail' post.slug %}">{{ post.title }}</a></h2>
+            <p>
+                Muallif: {{ post.author.username }} |
+                Kategoriya: <a href="{% url 'category_posts' post.category.slug %}">{{ post.category.name }}</a> |
+                Chop etilgan vaqti: {{ post.created_at|date:"Y-m-d" }}
+            </p>
+            <p>{{ post.content|truncatechars:200 }} <a href="{% url 'post_detail' post.slug %}">[davomini oʻqish]</a></p>
+            
+            {% if post.tags.all %}
+                <p>
+                    Teglar: {% for tag in post.tags.all %}
+                        <a href="{% url 'tag_posts' tag.slug %}">#{{ tag.name }}</a>{% if not forloop.last %}, {% endif %}
+                    {% endfor %}
+                </p>
+            {% endif %}
+        </div>
+    {% empty %}
+        <p>Hozircha chop etilgan postlar mavjud emas</p>
+    {% endfor %}
+
+    {% if is_paginated %}
+        <div class="pagination">
+            {% if page_obj.has_previous %}
+                <a href="?page={{ page_obj.previous_page_number }}">Avvalgi</a>
+            {% endif %}
+            <span>
+                Sahifa {{ page_obj.number }} / {{ page_obj.paginator.num_pages }}
+            </span>
+            {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}">Keyingi</a>
+            {% endif %}
+        </div>
+    {% endif %}
+
+{% endblock %}

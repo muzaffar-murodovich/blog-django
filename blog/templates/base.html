@@ -1,0 +1,60 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Django blog{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/main.css' %}">
+
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1><a href="{% url 'home' %}">Django blog</a></h1>
+            <nav>
+                <a href="{% url 'home' %}">Bosh sahifa</a>
+                {% if user.is_authenticated %}
+                    <a href="#">Post qoʻshish</a>
+                {% endif %}
+            </nav>
+            <div class="login-info">
+                {% if user.is_authenticated %}
+                    Salom, {{ user.username }}!
+                    <a href="#">Logout</a>
+                {% else %}
+                    <a href="#">Roʻyxatdan oʻtish</a>
+                    <a href="#">Kirish</a>
+                {% endif %}
+            </div>
+        </div>
+    </header>
+
+    <div class="container content">
+        <div class="main-content">
+            {% block content %}
+            {% endblock %}
+        </div>
+
+        <div class="sidebar">
+            <h3>Kategoriyalar</h3>
+            <ul>
+                {% for category in categories %}
+                    <li><a href="{% url 'category_posts' category.slug %}">{{ category.name }}</a></li>
+                {% empty %}
+                    <li>Kategoriyalar topilmadi</li>
+                {% endfor %}
+            </ul>
+
+            {% block sidebar %}
+            {% endblock %}
+        </div>
+    </div>
+
+    <footer>
+        <div class="container">
+            <p>Django blog loyihasi</p>
+        </div>
+    </footer>
+</body>
+</html>

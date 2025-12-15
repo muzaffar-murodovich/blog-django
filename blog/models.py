@@ -1,8 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.urls import reverse
-from hitcount.models import HitCount
 from django.contrib.contenttypes.fields import GenericRelation
+from hitcount.models import HitCount
 
 class Category(models.Model):
     name = models.CharField(max_length=100, unique=True)
@@ -32,7 +32,7 @@ class Post(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     is_published = models.BooleanField(default=False)
-    hit_count_generic = GenericRelation(HitCount, object_id_field='object_pk', related_query_name='hit_count_generic')
+    hit_count_generic = GenericRelation(HitCount, object_id_field='object_pk', related_query_name='hit_count_generic_relation')
     is_featured = models.BooleanField(default=False)
 
     class Meta:
