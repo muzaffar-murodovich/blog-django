@@ -1,9 +1,13 @@
-from django.shortcuts import render, get_object_or_404
-from django.views.generic import ListView, DetailView
+from django.shortcuts import render, get_object_or_404, redirect
+from django.views.generic import ListView
+from django.views.generic.detail import DetailView
+from django.views.generic.edit import FormMixin
+from django.urls import reverse
 from django.contrib.contenttypes.models import ContentType
-from .models import Post, Category, Tag
+from hitcount.models import HitCount
+from .models import Post, Category, Tag, Comment
+from .forms import CommentForm
 from hitcount.views import HitCountDetailView
-from hitcount.models import HitCount, HitCountManager
 
 class PostListView(ListView):
     model = Post
@@ -19,7 +23,6 @@ class PostListView(ListView):
         posts_published = Post.objects.filter(is_published=True)
         context['most_viewed'] = posts_published.order_by('-hit_count_generic__hits')[:5]
 
-        # HitCount uses GenericForeignKey; filter by content type/object_pk instead of reverse relation
         post_ids = list(posts_published.values_list('pk', flat=True))
         post_content_type = ContentType.objects.get_for_model(Post)
 
@@ -43,20 +46,44 @@ class PostListView(ListView):
 
         return context
 
-class PostDetailView(HitCountDetailView):
+
+class PostDetailView(HitCountDetailView, FormMixin):
     model = Post
     template_name = 'blog/post_detail.html'
     context_object_name = 'post'
     count_hit = True
+    form_class = CommentForm
 
     def get_queryset(self):
         return Post.objects.filter(is_published=True)
 
+    def get_success_url(self):
+        return reverse('post_detail', kwargs={'slug': self.object.slug})
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['categories'] = Category.objects.all()
         context['comments'] = self.object.comments.select_related('author')
+        context['form'] = self.get_form()
         return context
+
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        form = self.get_form()
+        
+        if not request.user.is_authenticated:
+            return render(request, self.template_name, self.get_context_data(form=form, error="Izoh qoldirish uchun tizimga kirishingiz kerak."))
+
+        if form.is_valid():
+            return self.form_valid(form)
+        else:
+            return self.form_invalid(form)
+
+    def form_valid(self, form):
+        comment = form.save(commit=False)
+        comment.post = self.object
+        comment.author = self.request.user
+        comment.save()
+        return super().form_valid(form)
 
 class CategoryPostListView(ListView):
     model = Post
