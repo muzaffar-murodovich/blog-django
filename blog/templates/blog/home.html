@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load hitcount_tags %}
 
 {% block title %}Asosiy Sahifa{% endblock %}
 
@@ -8,7 +9,7 @@
         {% for post in most_viewed %}
             <li>
                 <a href="{% url 'post_detail' post.slug %}">{{ post.title }}</a> 
-                <small>({{ post.hit_count_generic.hits }} marta ko'rilgan)</small>
+                <small>({% get_hit_count for post %} marta ko'rilgan)</small>
             </li>
         {% endfor %}
     </ul>
@@ -39,7 +40,7 @@
 
 
 {% block content %}
-    <h2>Eng yangi postlar</h2>
+    <h2>So'ngi postlar</h2>
 
     {% for post in posts %}
         <div class="post">
@@ -63,7 +64,7 @@
             {% endif %}
         </div>
     {% empty %}
-        <p>Hozircha chop etilgan postlar mavjud emas</p>
+        <p>Hozircha postlar mavjud emas</p>
     {% endfor %}
 
     {% if is_paginated %}

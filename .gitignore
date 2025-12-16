@@ -1,2 +1,12 @@
 .idea
 .vscode
+
+# PyCharm va cache fayllari
+__pycache__/
+*.pyc
+
+# Pipenv
+Pipfile.lock
+
+# Media
+media-files/
