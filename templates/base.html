@@ -12,19 +12,19 @@
     <header>
         <div class="container">
             <h1><a href="{% url 'home' %}">Django blog</a></h1>
-            <nav>
-                <a href="{% url 'home' %}">Bosh sahifa</a>
-                {% if user.is_authenticated %}
-                    <a href="#">Post qoʻshish</a>
-                {% endif %}
-            </nav>
+                <nav>
+                    <a href="{% url 'home' %}">Bosh Sahifa</a>
+                    {% if user.is_authenticated %}
+                        <a href="{% url 'add_post' %}">Post Qo'shish</a> 
+                    {% endif %}
+                </nav>
             <div class="login-info">
                 {% if user.is_authenticated %}
                     Salom, {{ user.username }}!
-                    <a href="#">Logout</a>
+                    <a href="{% url 'logout' %}">Chiqish</a> 
                 {% else %}
-                    <a href="#">Roʻyxatdan oʻtish</a>
-                    <a href="#">Kirish</a>
+                    <a href="{% url 'register' %}">Ro'yxatdan o'tish</a>
+                    <a href="{% url 'login' %}">Kirish</a>
                 {% endif %}
             </div>
         </div>

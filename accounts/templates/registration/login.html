@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block title %}Tizimga Kirish{% endblock %}
+
+{% block sidebar %}
+{% endblock %}
+
+{% block content %}
+    <h2>Tizimga Kirish</h2>
+    
+    {% if form.errors %}
+        <p style="color: red;">Login yoki parol noto'g'ri. Qayta urinib ko'ring.</p>
+    {% endif %}
+
+    <form method="post" action="{% url 'login' %}">
+        {% csrf_token %}
+        {{ form.as_p }}
+        
+        <button type="submit">Kirish</button>
+        
+        <input type="hidden" name="next" value="{{ next }}">
+    </form>
+    
+    <p>Ro'yxatdan o'tmaganmisiz? <a href="{% url 'register' %}">Ro'yxatdan o'tish</a></p>
+{% endblock %}

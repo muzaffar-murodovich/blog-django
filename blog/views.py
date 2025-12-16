@@ -1,13 +1,16 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views.generic import ListView
 from django.views.generic.detail import DetailView
-from django.views.generic.edit import FormMixin
-from django.urls import reverse
+from django.views.generic.edit import FormMixin, CreateView
+from django.urls import reverse, reverse_lazy
 from django.contrib.contenttypes.models import ContentType
 from hitcount.models import HitCount
 from .models import Post, Category, Tag, Comment
 from .forms import CommentForm
 from hitcount.views import HitCountDetailView
+from django.contrib.auth.mixins import LoginRequiredMixin
+from .forms import PostForm
+
 
 class PostListView(ListView):
     model = Post
@@ -113,3 +116,15 @@ class TagPostListView(ListView):
         context = super().get_context_data(**kwargs)
         context['tag_name'] = get_object_or_404(Tag, slug=self.kwargs['slug']).name
         return context
+
+class PostCreateView(LoginRequiredMixin, CreateView):
+    model = Post
+    form_class = PostForm
+    template_name = 'blog/post_form.html'
+    
+    success_url = reverse_lazy('home') 
+
+    def form_valid(self, form):
+        form.instance.author = self.request.user
+        form.instance.is_published = False 
+        return super().form_valid(form)

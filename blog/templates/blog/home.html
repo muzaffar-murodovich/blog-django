@@ -8,7 +8,7 @@
         {% for post in most_viewed %}
             <li>
                 <a href="{% url 'post_detail' post.slug %}">{{ post.title }}</a> 
-                <small>({{ post.hit_count.hits }} marta ko'rilgan)</small>
+                <small>({{ post.hit_count_generic.hits }} marta ko'rilgan)</small>
             </li>
         {% endfor %}
     </ul>
@@ -44,7 +44,7 @@
     {% for post in posts %}
         <div class="post">
             {% if post.image %}
-                <img src="{{ post.image.url }}" alt="{{ post.title }}" style="max-width: 100%; height: auto;">
+                <img src="{{ post.image.url }}" alt="{{ post.title }}" style="max-width: 100%; height: 100px;">
             {% endif %}
             <h2><a href="{% url 'post_detail' post.slug %}">{{ post.title }}</a></h2>
             <p>

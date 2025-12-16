@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ tag_name }} tegi bo'yicha postlar{% endblock %}
+
+{% block content %}
+    <h2>Teg: #{{ tag_name }}</h2>
+    <p>Ushbu tegga tegishli barcha nashr qilingan postlar:</p>
+
+    {% for post in posts %}
+        <div class="post">
+            {% if post.image %}
+                <img src="{{ post.image.url }}" alt="{{ post.title }}" style="max-width: 100%; height: auto;">
+            {% endif %}
+            
+            <h2><a href="{% url 'post_detail' post.slug %}">{{ post.title }}</a></h2>
+            <p>
+                Muallif: {{ post.author.username }} | 
+                Kategoriya: <a href="{% url 'category_posts' post.category.slug %}">{{ post.category.name }}</a> | 
+                Nashr qilingan: {{ post.created_at|date:"Y-m-d" }}
+            </p>
+            <p>{{ post.content|truncatechars:200 }} <a href="{% url 'post_detail' post.slug %}">[davomini o'qish]</a></p>
+            
+            {% if post.tags.all %}
+                <p>
+                    Teglar: {% for tag in post.tags.all %}
+                        <a href="{% url 'tag_posts' tag.slug %}">#{{ tag.name }}</a>{% if not forloop.last %}, {% endif %}
+                    {% endfor %}
+                </p>
+            {% endif %}
+        </div>
+    {% empty %}
+        <p>Hozircha "#{{ tag_name }}" tegi bilan belgilanmagan nashr qilingan postlar mavjud emas.</p>
+    {% endfor %}
+
+    {% if is_paginated %}
+        <div class="pagination">
+            {% if page_obj.has_previous %}
+                <a href="?page={{ page_obj.previous_page_number }}">Oldingi</a>
+            {% endif %}
+            <span>
+                Sahifa {{ page_obj.number }} / {{ page_obj.paginator.num_pages }}
+            </span>
+            {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}">Keyingi</a>
+            {% endif %}
+        </div>
+    {% endif %}
+
+{% endblock %}

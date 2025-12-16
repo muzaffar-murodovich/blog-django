@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block title %}Yangi Post Yaratish{% endblock %}
+
+{% block sidebar %}
+{% endblock %}
+
+{% block content %}
+    <h2>Yangi Post Joylash</h2>
+    <p>Post yuborilgandan so'ng, asosiy sahifada ko'rinishdan oldin ategoriyalar topilmadadmin tasdig'idan o'tadi.</p>
+    
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        
+        {{ form.as_p }} 
+        
+        <button type="submit">Post yuborish</button>
+    </form>
+{% endblock %}

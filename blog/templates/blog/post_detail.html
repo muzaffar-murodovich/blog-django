@@ -8,10 +8,10 @@
     <div class="post-detail">
         <h1>{{ post.title }}</h1>
         <p class="post-meta">
-            **Muallif:** {{ post.author.username }} | 
-            **Kategoriya:** <a href="{% url 'category_posts' post.category.slug %}">{{ post.category.name }}</a> | 
-            **Nashr qilingan:** {{ post.created_at|date:"Y-m-d H:i" }} |
-            **Ko'rildi:** {% get_hit_count for post %} marta
+            Muallif: {{ post.author.username }} | 
+            Kategoriya: <a href="{% url 'category_posts' post.category.slug %}">{{ post.category.name }}</a> | 
+            Chop etilgan vaqti: {{ post.created_at|date:"Y-m-d H:i" }} |
+            Ko'rildi: {% get_hit_count for post %} marta
         </p>
 
         {% if post.image %}
@@ -24,7 +24,7 @@
 
         {% if post.tags.all %}
             <p class="post-tags">
-                **Teglar:** {% for tag in post.tags.all %}
+                Teglar: {% for tag in post.tags.all %}
                     <a href="{% url 'tag_posts' tag.slug %}" class="tag">#{{ tag.name }}</a>{% if not forloop.last %}, {% endif %}
                 {% endfor %}
             </p>
@@ -38,7 +38,7 @@
             {% for comment in post.comments.all %}
                 <div class="comment">
                     <p class="comment-author">
-                        **{{ comment.author.username }}** - {{ comment.created_at|timesince }} oldin:
+                        {{ comment.author.username }} - {{ comment.created_at}} da:
                     </p>
                     <p class="comment-text">{{ comment.text }}</p>
                 </div>
@@ -55,7 +55,7 @@
                 <button type="submit">Izoh Yuborish</button>
             </form>
             {% else %}
-                <p>Izoh qoldirish uchun <a href="#">roʻyxatdan oʻting</a> yoki <a href="#">tizimga kiring</a>.</p>
+                <p>Izoh qoldirish uchun <a href="{% url 'register' %}">roʻyxatdan oʻting</a> yoki <a href="{% url 'login' %}">tizimga kiring</a>.</p>
             {% endif %}
         </div>
     </div>
