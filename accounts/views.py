@@ -1,13 +1,12 @@
 from django.shortcuts import redirect
-from django.contrib.auth.forms import UserCreationForm
 from django.urls import reverse_lazy
 from django.views import generic, View
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth import logout
-from django.contrib import messages
+from .forms import CustomUserCreationForm, CustomAuthenticationForm
 
 class RegisterView(generic.CreateView):
-    form_class = UserCreationForm
+    form_class = CustomUserCreationForm
     success_url = reverse_lazy('login')
     template_name = 'registration/register.html'
     
@@ -20,3 +19,8 @@ class LogoutView(LoginRequiredMixin, View):
     def get(self, request):
         logout(request)
         return redirect('home')
+
+class LoginView(generic.FormView):
+    form_class = CustomAuthenticationForm
+    template_name = 'registration/login.html'
+    success_url = reverse_lazy('home')
