@@ -1,7 +1,7 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views.generic import ListView
 from django.views.generic.detail import DetailView
-from django.views.generic.edit import FormMixin, CreateView
+from django.views.generic.edit import FormMixin, CreateView, UpdateView, DeleteView
 from django.urls import reverse, reverse_lazy
 from django.contrib.contenttypes.models import ContentType
 from hitcount.models import HitCount
@@ -66,6 +66,7 @@ class PostDetailView(HitCountDetailView, FormMixin):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['comments'] = self.object.comments.select_related('author')
+        context['comment_count'] = self.object.comments.count()
         context['form'] = self.get_form()
         return context
 
@@ -128,3 +129,35 @@ class PostCreateView(LoginRequiredMixin, CreateView):
         form.instance.author = self.request.user
         form.instance.is_published = False 
         return super().form_valid(form)
+
+class PostUpdateView(LoginRequiredMixin, UpdateView):
+    model = Post
+    form_class = PostForm
+    template_name = 'blog/post_form.html'
+
+    def form_valid(self, form):
+        form.instance.author = self.request.user
+        return super().form_valid(form)
+
+    def get_queryset(self):
+        return Post.objects.filter(author=self.request.user)
+
+    def get_success_url(self):
+        return reverse('post_detail', kwargs={'slug': self.object.slug})
+
+class PostDeleteView(LoginRequiredMixin, DeleteView):
+    model = Post
+    template_name = 'blog/post_delete.html'
+    success_url = reverse_lazy('home')
+
+    def get_queryset(self):
+        return Post.objects.filter(author=self.request.user)
+
+    def get_success_url(self):
+        return reverse('home')
+
+    def delete(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        if self.object.author != request.user:
+            return redirect('home')
+        return super().delete(request, *args, **kwargs)

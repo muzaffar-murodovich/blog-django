@@ -7,6 +7,9 @@ class CommentForm(forms.ModelForm):
     class Meta:
         model = Comment
         fields = ["text"]
+        labels = {
+            "text": "Izoh",
+        }
         widgets = {
             "text": forms.Textarea(
                 attrs={"rows": 4, "placeholder": "Izohingizni shu yerga yozing..."}
@@ -19,6 +22,13 @@ class PostForm(forms.ModelForm):
         model = Post
         # Slug is generated automatically from the title
         fields = ["title", "content", "image", "category", "tags"]
+        labels = {
+            "title": "Sarlavha",
+            "content": "Matn",
+            "image": "Rasm",
+            "category": "Kategoriya",
+            "tags": "Teglar",
+        }
         widgets = {
             "title": forms.TextInput(attrs={"placeholder": "Post sarlavhasi..."}),
             "content": forms.Textarea(
