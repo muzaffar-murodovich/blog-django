@@ -12,7 +12,8 @@
             Kategoriya: <a href="{% url 'category_posts' post.category.slug %}">{{ post.category.name }}</a> | 
             Chop etilgan vaqti: {{ post.created_at|date:"Y-m-d H:i" }} |
             Ko'rildi: {% get_hit_count for post %} marta |
-            Izohlar: {{ comment_count }} ta | 
+            Izohlar: {{ comment_count }} ta |
+            {{ reading_time }} daqiqada o'qiladi | 
         
         {% if user.is_authenticated and post.author == user %}
             <a href="{% url 'update_post' post.slug %}" class="btn btn-primary">Tahrirlash</a> | 

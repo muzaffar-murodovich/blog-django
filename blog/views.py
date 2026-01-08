@@ -68,6 +68,11 @@ class PostDetailView(HitCountDetailView, FormMixin):
         context['comments'] = self.object.comments.select_related('author')
         context['comment_count'] = self.object.comments.count()
         context['form'] = self.get_form()
+        
+        word_count = len(self.object.content.split())
+        reading_time = max(1, round(word_count / 200))
+        context['reading_time'] = reading_time
+        
         return context
 
     def post(self, request, *args, **kwargs):
